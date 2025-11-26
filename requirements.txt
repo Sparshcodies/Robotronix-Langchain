@@ -1,0 +1,23 @@
+langchain
+langchain-core
+# langchain-openai
+langchain-groq
+langchain-community
+langchain-ollama
+# langchain-google-genai
+langchain-text-splitters
+transformers
+peft
+
+# Langserve
+Langserve
+fastapi
+uvicorn
+sse_starlette
+
+
+chromadb
+faiss-cpu
+bs4
+pypdf
+streamlit
