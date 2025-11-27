@@ -9,15 +9,20 @@ langchain-text-splitters
 transformers
 peft
 
-# Langserve
 Langserve
 fastapi
 uvicorn
 sse_starlette
 
-
 chromadb
 faiss-cpu
+selenium
+lxml
+playwright
+playwright-stealth
 bs4
 pypdf
+arxiv
+wikipedia
+
 streamlit
