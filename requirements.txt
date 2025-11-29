@@ -26,3 +26,5 @@ arxiv
 wikipedia
 
 streamlit
+elevenlabs
+inflect
