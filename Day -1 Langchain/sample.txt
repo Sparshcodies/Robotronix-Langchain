@@ -1,288 +1,345 @@
-﻿Transformers acts as the model-definition framework for state-of-the-art machine learning models in text, computer vision, audio, video, and multimodal model, for both inference and training.
-
-It centralizes the model definition so that this definition is agreed upon across the ecosystem. transformers is the pivot across frameworks: if a model definition is supported, it will be compatible with the majority of training frameworks (Axolotl, Unsloth, DeepSpeed, FSDP, PyTorch-Lightning, …), inference engines (vLLM, SGLang, TGI, …), and adjacent modeling libraries (llama.cpp, mlx, …) which leverage the model definition from transformers.
-
-We pledge to help support new state-of-the-art models and democratize their usage by having their model definition be simple, customizable, and efficient.
-
-There are over 1M+ Transformers model checkpoints on the Hugging Face Hub you can use.
-
-Explore the Hub today to find a model and use Transformers to help you get started right away.
-
-Explore the Models Timeline to discover the latest text, vision, audio and multimodal model architectures in Transformers.
-
-Features
-Transformers provides everything you need for inference or training with state-of-the-art pretrained models. Some of the main features include:
-
-Pipeline: Simple and optimized inference class for many machine learning tasks like text generation, image segmentation, automatic speech recognition, document question answering, and more.
-Trainer: A comprehensive trainer that supports features such as mixed precision, torch.compile, and FlashAttention for training and distributed training for PyTorch models.
-generate: Fast text generation with large language models (LLMs) and vision language models (VLMs), including support for streaming and multiple decoding strategies.
-Design
-Read our Philosophy to learn more about Transformers’ design principles.
-
-Transformers is designed for developers and machine learning engineers and researchers. Its main design principles are:
-
-Fast and easy to use: Every model is implemented from only three main classes (configuration, model, and preprocessor) and can be quickly used for inference or training with Pipeline or Trainer.
-Pretrained models: Reduce your carbon footprint, compute cost and time by using a pretrained model instead of training an entirely new one. Each pretrained model is reproduced as closely as possible to the original model and offers state-of-the-art performance.
-HuggingFace Expert Acceleration Program
-Learn
-If you’re new to Transformers or want to learn more about transformer models, we recommend starting with the LLM course. This comprehensive course covers everything from the fundamentals of how transformer models work to practical applications across various tasks. You’ll learn the complete workflow, from curating high-quality datasets to fine-tuning large language models and implementing reasoning capabilities. The course contains both theoretical and hands-on exercises to build a solid foundational knowledge of transformer models as you learn.
-
-Installation
-Transformers works with PyTorch. It has been tested on Python 3.9+ and PyTorch 2.2+.
-
-Virtual environment
-uv is an extremely fast Rust-based Python package and project manager and requires a virtual environment by default to manage different projects and avoids compatibility issues between dependencies.
-
-It can be used as a drop-in replacement for pip, but if you prefer to use pip, remove uv from the commands below.
-
-Refer to the uv installation docs to install uv.
-
-Create a virtual environment to install Transformers in.
-
-Copied
-uv venv .env
-source .env/bin/activate
-Python
-Install Transformers with the following command.
-
-uv is a fast Rust-based Python package and project manager.
-
-Copied
-uv pip install transformers
-For GPU acceleration, install the appropriate CUDA drivers for PyTorch.
-
-Run the command below to check if your system detects an NVIDIA GPU.
-
-Copied
-nvidia-smi
-To install a CPU-only version of Transformers, run the following command.
-
-Copied
-uv pip install torch --index-url https://download.pytorch.org/whl/cpu
-uv pip install transformers
-Test whether the install was successful with the following command. It should return a label and score for the provided text.
-
-Copied
-python -c "from transformers import pipeline; print(pipeline('sentiment-analysis')('hugging face is the best'))"
-[{'label': 'POSITIVE', 'score': 0.9998704791069031}]
-Source install
-Installing from source installs the latest version rather than the stable version of the library. It ensures you have the most up-to-date changes in Transformers and it’s useful for experimenting with the latest features or fixing a bug that hasn’t been officially released in the stable version yet.
-
-The downside is that the latest version may not always be stable. If you encounter any problems, please open a GitHub Issue so we can fix it as soon as possible.
-
-Install from source with the following command.
-
-Copied
-uv pip install git+https://github.com/huggingface/transformers
-Check if the install was successful with the command below. It should return a label and score for the provided text.
-
-Copied
-python -c "from transformers import pipeline; print(pipeline('sentiment-analysis')('hugging face is the best'))"
-[{'label': 'POSITIVE', 'score': 0.9998704791069031}]
-Editable install
-An editable install is useful if you’re developing locally with Transformers. It links your local copy of Transformers to the Transformers repository instead of copying the files. The files are added to Python’s import path.
-
-Copied
-git clone https://github.com/huggingface/transformers.git
-cd transformers
-uv pip install -e .
-You must keep the local Transformers folder to keep using it.
-
-Update your local version of Transformers with the latest changes in the main repository with the following command.
-
-Copied
-cd ~/transformers/
-git pull
-conda
-conda is a language-agnostic package manager. Install Transformers from the conda-forge channel in your newly created virtual environment.
-
-Copied
-conda install conda-forge::transformers
-Set up
-After installation, you can configure the Transformers cache location or set up the library for offline usage.
-
-Cache directory
-When you load a pretrained model with from_pretrained(), the model is downloaded from the Hub and locally cached.
-
-Every time you load a model, it checks whether the cached model is up-to-date. If it’s the same, then the local model is loaded. If it’s not the same, the newer model is downloaded and cached.
-
-The default directory given by the shell environment variable TRANSFORMERS_CACHE is ~/.cache/huggingface/hub. On Windows, the default directory is C:\Users\username\.cache\huggingface\hub.
-
-Cache a model in a different directory by changing the path in the following shell environment variables (listed by priority).
-
-HF_HUB_CACHE or TRANSFORMERS_CACHE (default)
-HF_HOME
-XDG_CACHE_HOME + /huggingface (only if HF_HOME is not set)
-Older versions of Transformers uses the shell environment variables PYTORCH_TRANSFORMERS_CACHE or PYTORCH_PRETRAINED_BERT_CACHE. You should keep these unless you specify the newer shell environment variable TRANSFORMERS_CACHE.
-
-Offline mode
-To use Transformers in an offline or firewalled environment requires the downloaded and cached files ahead of time. Download a model repository from the Hub with the snapshot_download method.
-
-Refer to the Download files from the Hub guide for more options for downloading files from the Hub. You can download files from specific revisions, download from the CLI, and even filter which files to download from a repository.
-
-Copied
-from huggingface_hub import snapshot_download
-
-snapshot_download(repo_id="meta-llama/Llama-2-7b-hf", repo_type="model")
-Set the environment variable HF_HUB_OFFLINE=1 to prevent HTTP calls to the Hub when loading a model.
-
-Copied
-HF_HUB_OFFLINE=1 \
-python examples/pytorch/language-modeling/run_clm.py --model_name_or_path meta-llama/Llama-2-7b-hf --dataset_name wikitext ...
-Another option for only loading cached files is to set local_files_only=True in from_pretrained().
-
-Copied
-from transformers import LlamaForCausalLM
-
-model = LlamaForCausalLM.from_pretrained("./path/to/local/directory", local_files_only=True)
-
-Quickstart
-Transformers is designed to be fast and easy to use so that everyone can start learning or building with transformer models.
-
-The number of user-facing abstractions is limited to only three classes for instantiating a model, and two APIs for inference or training. This quickstart introduces you to Transformers’ key features and shows you how to:
-
-load a pretrained model
-run inference with Pipeline
-fine-tune a model with Trainer
-Set up
-To start, we recommend creating a Hugging Face account. An account lets you host and access version controlled models, datasets, and Spaces on the Hugging Face Hub, a collaborative platform for discovery and building.
-
-Create a User Access Token and log in to your account.
-
-Paste your User Access Token into notebook_login when prompted to log in.
-
-Copied
-from huggingface_hub import notebook_login
-
-notebook_login()
-Install Pytorch.
-
-Copied
-!pip install torch
-Then install an up-to-date version of Transformers and some additional libraries from the Hugging Face ecosystem for accessing datasets and vision models, evaluating training, and optimizing training for large models.
-
-Copied
-!pip install -U transformers datasets evaluate accelerate timm
-Pretrained models
-Each pretrained model inherits from three base classes.
-
-Class	Description
-PretrainedConfig	A file that specifies a models attributes such as the number of attention heads or vocabulary size.
-PreTrainedModel	A model (or architecture) defined by the model attributes from the configuration file. A pretrained model only returns the raw hidden states. For a specific task, use the appropriate model head to convert the raw hidden states into a meaningful result (for example, LlamaModel versus LlamaForCausalLM).
-Preprocessor	A class for converting raw inputs (text, images, audio, multimodal) into numerical inputs to the model. For example, PreTrainedTokenizer converts text into tensors and ImageProcessingMixin converts pixels into tensors.
-We recommend using the AutoClass API to load models and preprocessors because it automatically infers the appropriate architecture for each task and machine learning framework based on the name or path to the pretrained weights and configuration file.
-
-Use from_pretrained() to load the weights and configuration file from the Hub into the model and preprocessor class.
-
-When you load a model, configure the following parameters to ensure the model is optimally loaded.
-
-device_map="auto" automatically allocates the model weights to your fastest device first.
-dtype="auto" directly initializes the model weights in the data type they’re stored in, which can help avoid loading the weights twice (PyTorch loads weights in torch.float32 by default).
-Copied
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf", dtype="auto", device_map="auto")
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf")
-Tokenize the text and return PyTorch tensors with the tokenizer. Move the model to an accelerator if it’s available to accelerate inference.
-
-Copied
-model_inputs = tokenizer(["The secret to baking a good cake is "], return_tensors="pt").to(model.device)
-The model is now ready for inference or training.
-
-For inference, pass the tokenized inputs to generate() to generate text. Decode the token ids back into text with batch_decode().
-
-Copied
-generated_ids = model.generate(**model_inputs, max_length=30)
-tokenizer.batch_decode(generated_ids)[0]
-'<s> The secret to baking a good cake is 100% in the preparation. There are so many recipes out there,'
-Skip ahead to the Trainer section to learn how to fine-tune a model.
-
-Pipeline
-The Pipeline class is the most convenient way to inference with a pretrained model. It supports many tasks such as text generation, image segmentation, automatic speech recognition, document question answering, and more.
-
-Refer to the Pipeline API reference for a complete list of available tasks.
-
-Create a Pipeline object and select a task. By default, Pipeline downloads and caches a default pretrained model for a given task. Pass the model name to the model parameter to choose a specific model.
-
-Use infer_device() to automatically detect an available accelerator for inference.
-
-Copied
-from transformers import pipeline, infer_device
-
-device = infer_device()
-
-pipeline = pipeline("text-generation", model="meta-llama/Llama-2-7b-hf", device=device)
-Prompt Pipeline with some initial text to generate more text.
-
-Copied
-pipeline("The secret to baking a good cake is ", max_length=50)
-[{'generated_text': 'The secret to baking a good cake is 100% in the batter. The secret to a great cake is the icing.\nThis is why we’ve created the best buttercream frosting reci'}]
-Trainer
-Trainer is a complete training and evaluation loop for PyTorch models. It abstracts away a lot of the boilerplate usually involved in manually writing a training loop, so you can start training faster and focus on training design choices. You only need a model, dataset, a preprocessor, and a data collator to build batches of data from the dataset.
-
-Use the TrainingArguments class to customize the training process. It provides many options for training, evaluation, and more. Experiment with training hyperparameters and features like batch size, learning rate, mixed precision, torch.compile, and more to meet your training needs. You could also use the default training parameters to quickly produce a baseline.
-
-Load a model, tokenizer, and dataset for training.
-
-Copied
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
-from datasets import load_dataset
-
-model = AutoModelForSequenceClassification.from_pretrained("distilbert/distilbert-base-uncased")
-tokenizer = AutoTokenizer.from_pretrained("distilbert/distilbert-base-uncased")
-dataset = load_dataset("rotten_tomatoes")
-Create a function to tokenize the text and convert it into PyTorch tensors. Apply this function to the whole dataset with the map method.
-
-Copied
-def tokenize_dataset(dataset):
-    return tokenizer(dataset["text"])
-dataset = dataset.map(tokenize_dataset, batched=True)
-Load a data collator to create batches of data and pass the tokenizer to it.
-
-Copied
-from transformers import DataCollatorWithPadding
-
-data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-Next, set up TrainingArguments with the training features and hyperparameters.
-
-Copied
-from transformers import TrainingArguments
-
-training_args = TrainingArguments(
-    output_dir="distilbert-rotten-tomatoes",
-    learning_rate=2e-5,
-    per_device_train_batch_size=8,
-    per_device_eval_batch_size=8,
-    num_train_epochs=2,
-    push_to_hub=True,
+﻿What is a Large Language Model (LLM)
+Last Updated : 18 Sep, 2025
+Large Language Models (LLMs) are advanced AI systems built on deep neural networks designed to process, understand and generate human-like text. By using massive datasets and billions of parameters, LLMs have transformed the way humans interact with technology. It learns patterns, grammar and context from text and can answer questions, write content, translate languages and many more. Mordern LLMs include ChatGPT (OpenAI), Google Gemini, Anthropic Claude, etc
+
+exploring_large_language_models_llms_
+LLM
+To explore the technical concepts behind LLMs, understand how they work, what they can do and how to build projects using them, refer to our Large Language Model (LLM) Tutorial.
+
+Working of LLM
+LLMs are primarily based on the Transformer architecture which enables them to learn long-range dependencies and contextual meaning in text. At a high level, they work through:
+
+transformers_in_llms
+Working
+Input Embeddings: Converting text into numerical vectors.
+Positional Encoding: Adding sequence/order information.
+Self-Attention: Understanding relationships between words in context.
+Feed-Forward Layers: Capturing complex patterns.
+Decoding: Generating responses step-by-step.
+Multi-Head Attention: Parallel reasoning over multiple relationships.
+To know more about transformers architecture refer to: Architecture and Working of Transformers in Deep Learning
+
+Architecture
+The architecture of LLMs consist of multiple stacked layers that process text in parallel. Core components include:
+
+Embedding Layer: Converts tokens i.e words/subwords into dense vectors.
+Attention Mechanism: Learns context by focusing on relevant words.
+Feed-Forward Layers: Capture non-linear patterns and relationships.
+Normalization and Residual Connections: Improve training stability.
+Output Layer: Generates predictions such as the next word or sentence.
+To know more about the architecture of LLM, read LLM Architecture.
+
+Popular LLMs
+Some of the most widely used LLMs include:
+
+GPT-4 and GPT-4o (OpenAI): Advanced multimodal reasoning and dialogue capabilities.
+Gemini 1.5 (Google DeepMind): Long-context reasoning, capable of handling 1M+ tokens.
+Claude 3 (Anthropic): Safety-focused, strong at reasoning and summarization.
+LLaMA 3 (Meta): Open-weight model, popular in research and startups.
+Mistral 7B / Mixtral (Mistral AI): Efficient open-source alternatives for developers.
+BERT and RoBERTa (Google/Facebook): Strong embedding models for NLP tasks.
+mBERT and XLM-R: Early multilingual LLMs.
+BLOOM: Large open-source multilingual model, collaboratively developed.
+Use Cases
+Code Generation: LLMs can generate accurate code based on user instructions for specific tasks.
+Debugging and Documentation: They assist in identifying code errors, suggesting fixes and even automating project documentation.
+Question Answering: Users can ask both casual and complex questions, receiving detailed, context-aware responses.
+Language Translation and Correction: LLMs can translate text between over 50 languages and correct grammatical errors.
+Prompt-Based Versatility: By crafting creative prompts, users can unlock endless possibilities, as LLMs excel in one-shot and zero-shot learning scenarios.
+Advantages
+Large Language Models (LLMs) come with several advantages that contribute to their widespread adoption and success in various applications:
+
+Zero-Shot and Few-Shot Learning: Can perform new tasks without explicit retraining.
+Scalable Knowledge: Efficiently process and understand vast text corpora.
+Fine-Tuning Flexibility: Adaptable to specific industries and datasets.
+Automation of Language Tasks: Frees human effort from repetitive or time-consuming tasks.
+Versatility: Effective across multiple domains—healthcare, education, business and research.
+Challenges
+High Costs: Training requires millions of dollars in compute resources.
+Time-Intensive: Training large models can take weeks or months.
+Data Challenges: Limited availability of high-quality, legal and unbiased text data.
+Environmental Impact: High energy consumption leading to significant carbon footprint.
+Ethical Concerns: Bias, misinformation risks and responsible deployment remains a major issue.
+
+LLM Architecture
+Last Updated : 28 Oct, 2025
+Large Language Models (LLMs) are AI systems designed to understand, process and generate human-like text. They are built using advanced neural network architectures that allow them to learn patterns, context and semantics from vast amounts of text data. LLMs are used in applications like chatbots, translation systems, content generation and text summarization.
+
+They are based mainly on transformer architectures which allow efficient learning of relationships between words in a sequence.
+LLMs require large datasets and significant computational power for training.
+These models can be fine-tuned for specific tasks making them adaptable to different domains.
+Despite their power, LLMs can inherit biases from training data and require careful monitoring.
+Architecture
+input_data
+Flow
+1. Input Layer: Tokenization
+Input text is broken into tokens which are smaller units like words, subwords or characters.
+Tokens are converted into numerical representations that the model can process.
+2. Embedding Layer
+Word embeddings map tokens to dense vectors representing their meanings.
+Positional embeddings are added to indicate the order of tokens, since transformers cannot process sequences in order naturally.
+3. Transformer Architecture
+Self-Attention calculates how each word relates to others in the input. It uses Query (Q), Key (K) and Value (V) vectors.
+Multi-head attention allows the model to focus on multiple relationships simultaneously.
+A feedforward network processes attention outputs independently for each token.
+Layer normalization and residual connections help stabilize training and allow deeper networks.
+4. Stacking Layers
+Transformers are composed of multiple blocks stacked together.
+Each block contains attention and feedforward layers to capture complex relationships and hierarchical patterns in text.
+5. Output Layer: Decoding
+In autoregressive models like GPT, the model predicts the next word in a sequence.
+In masked models like BERT, the model predicts missing words in a sequence.
+The final softmax layer converts outputs into probability distributions over the vocabulary.
+Training and Fine-Tuning
+1. Pre-training
+LLMs start by learning from massive datasets like books, articles, websites and other text sources. The model is trained to predict missing words or the next word in a sequence, helping it understand language patterns. This phase demands powerful GPUs or TPUs and distributed computing, since the models often contain billions of parameters.
+
+2. Fine-tuning
+After pre-training, the model can be refined on specific datasets for particular tasks like translation, sentiment analysis or question-answering. During this step, hyperparameters such as learning rate and batch size are carefully adjusted to get the best performance on the target task.
+
+3. Optimization and Scaling
+During training, the model minimizes a loss function that is usually a cross-entropy by adjusting its weights using backpropagation and gradient descent.
+
+To handle large models efficiently, different scaling strategies are used:
+
+Data parallelism and model parallelism allow the workload to be split across multiple devices.
+Techniques like quantization, pruning and distillation help shrink the model size and speed up inference without losing much accuracy.
+Ethical Considerations
+Bias and Fairness: LLMs can reflect biases in their training data, requiring evaluation and mitigation.
+Misinformation and Safety: They may generate incorrect or misleading content, so oversight and filters are needed.
+Privacy and Data Security: Training data can include sensitive information, making anonymization and secure handling crucial.
+Environmental Impact: Large models consume significant energy, so efficiency and optimization are important.
+Responsible Deployment: Guidelines and monitoring are necessary to prevent misuse of the model.
+
+Architecture and Working of Transformers in Deep Learning
+Last Updated : 18 Oct, 2025
+Transformers are a type of deep learning model that utilizes self-attention mechanisms to process and generate sequences of data efficiently. They capture long-range dependencies and contextual relationships making them highly effective for tasks like language modeling, machine translation and text generation. Transformer model is built on encoder-decoder architecture where both the encoder and decoder are composed of a series of layers that utilize self-attention mechanisms and feed-forward neural networks. This architecture enables the model to process input data in parallel making it highly efficient and effective for tasks involving sequential data.
+
+The encoder processes input sequences and creates meaningful representations.
+The decoder generates outputs based on encoder representations and previously predicted tokens.
+The encoder and decoder work together to transform the input into the desired output such as translating a sentence from one language to another or generating a response to a query.
+
+transformers
+Overall Transformer Architecture, detailing Encoder and Decoder stacks with their respective sub-layers and data flow
+1. Encoder
+The primary function of the encoder is to create a high-dimensional representation of the input sequence that the decoder can use to generate the output. Encoder consists of multiple layers and each layer is composed of two main sub-layers:
+
+Self-Attention Mechanism: This sub-layer allows the encoder to weigh the importance of different parts of the input sequence differently to capture dependencies regardless of their distance within the sequence.
+Feed-Forward Neural Network: This sub-layer consists of two linear transformations with a ReLU activation in between. It processes the output of the self-attention mechanism to generate a refined representation.
+Layer normalization and residual connections are used around each of these sub-layers to ensure stability and improve convergence during training.
+
+2. Decoder
+Decoder in transformer also consists of multiple identical layers. Its primary function is to generate the output sequence based on the representations provided by the encoder and the previously generated tokens of the output.
+
+Each decoder layer consists of three main sub-layers:
+
+Masked Self-Attention Mechanism: Similar to the encoder's self-attention mechanism but its main purpose is to prevent attending to future tokens to maintain the autoregressive property (no cheating during generation).
+Encoder-Decoder Attention Mechanism: This sub-layer allows the decoder to focus on relevant parts of the encoder's output representation. This allows the decoder to focus on relevant parts of the input, essential for tasks like translation.
+Feed-Forward Neural Network: This sub-layer processes the combined output of the masked self-attention and encoder-decoder attention mechanisms.
+In-Depth Analysis of Transformer Components
+1. Multi-Head Self-Attention Mechanism
+Multi-head attention extends the self-attention mechanism by applying it multiple times in parallel with each "head" learning different aspects of the input data. This allows the model to capture a richer set of relationships within the input sequence. The outputs of these heads are then concatenated and linearly transformed to produce the final output. The benefits include:
+
+Improved ability to capture complex patterns in the data.
+Enhanced model capacity without significant increase in computational complexity.
+Mathematical Formulation:
+Given an input sequence X the self-attention mechanism computes three matrices: queries Q, keys K and values V by multiplying X with learned weight matrices 
+W
+Q
+W 
+Q
+​
+ ​, 
+W
+K
+W 
+K
+​
+ ​ and 
+W
+V
+W 
+V
+​
+ .
+
+Q
+=
+X
+W
+Q
+,
+K
+=
+X
+W
+K
+,
+V
+=
+X
+W
+V
+Q=XW 
+Q
+​
+ ,K=XW 
+K
+​
+ ,V=XW 
+V
+​
+ 
+
+The attention scores are computed as:
+
+Attention
+(
+Q
+,
+K
+,
+V
 )
-Finally, pass all these separate components to Trainer and call train() to start.
-
-Copied
-from transformers import Trainer
-
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=dataset["train"],
-    eval_dataset=dataset["test"],
-    tokenizer=tokenizer,
-    data_collator=data_collator,
+=
+softmax
+(
+Q
+K
+T
+d
+k
 )
+Attention(Q,K,V)=softmax( 
+d 
+k
+​
+ 
+​
+ 
+QK 
+T
+ 
+​
+ )
 
-trainer.train()
-Share your model and tokenizer to the Hub with push_to_hub().
+For multi-head attention, we apply self-attention multiple times:
 
-Copied
-trainer.push_to_hub()
-Congratulations, you just trained your first model with Transformers!
+MultiHead
+(
+Q
+,
+K
+,
+V
+)
+=
+Concat
+(
+head
+1
+,
+…
+,
+head
+h
+)
+W
+O
+MultiHead(Q,K,V)=Concat(head 
+1
+​
+ ,…,head 
+h
+​
+ )W 
+O
+​
+ 
 
-Next steps
-Now that you have a better understanding of Transformers and what it offers, it’s time to keep exploring and learning what interests you the most.
+where Where each head is computed as:
 
-Base classes: Learn more about the configuration, model and processor classes. This will help you understand how to create and customize models, preprocess different types of inputs (audio, images, multimodal), and how to share your model.
-Inference: Explore the Pipeline further, inference and chatting with LLMs, agents, and how to optimize inference with your machine learning framework and hardware.
-Training: Study the Trainer in more detail, as well as distributed training and optimizing training on specific hardware.
-Quantization: Reduce memory and storage requirements with quantization and speed up inference by representing weights with fewer bits.
-Resources: Looking for end-to-end recipes for how to train and inference with a model for a specific task? Check out the task recipes!
-Update on GitHub
+head
+i
+=
+Attention
+(
+Q
+W
+Q
+i
+,
+K
+W
+K
+i
+,
+V
+W
+V
+i
+)
+head 
+i
+​
+ =Attention(QW 
+Q
+i
+​
+ ,KW 
+K
+i
+​
+ ,VW 
+V
+i
+​
+ )
+
+Where : WQiW Q​ i, WKiW K​ i, WViW V
+​
+ iare learned projection matrices for the i-th head.
+2. Position-wise Feed-Forward Networks
+Each position in the sequence is independently processed using a feed-forward network:
+
+FFN(x)=max(0,xW1+b1)W2+b2
+FFN(x)=max(0,xW1+b1)W2+b2
+​
+ 
+
+This helps the transformer learn complex representations of input features.
+
+Note: This is a two-layer fully connected network applied position-wise.
+
+3. Positional Encoding
+Transformers lack inherent information about the order of the input sequence due to their parallel processing nature. Positional encoding is introduced to provide the model with information about the position of each token in the sequence.
+Positional encodings are added to the input embeddings to give the model a sense of token order. These encodings can be either learned or fixed.
+4. Layer Normalization and Residual Connections
+Layer Normalization: stabilizes training by normalizing inputs.
+Residual Connections: help avoid vanishing gradients by adding the original input to the output of the sub-layer by establishing skip connections from inputs to outputs.
+Output=LayerNorm(x+SubLayer(x))
+Output=LayerNorm(x+SubLayer(x))
+
+This addition helps in preserving the original input information which is crucial for learning complex representations.
+
+How Transformers Work
+1. Input Representation
+The first step in processing input data involves converting raw text into a format that the transformer model can understand. This involves tokenization and embedding.
+
+Tokenization: The input text is split into smaller units called tokens, which can be words, sub words or characters. Tokenization ensures that the text is broken down into manageable pieces.
+Embedding: Each token is then converted into a fixed-size vector using an embedding layer. This layer maps each token to a dense vector representation that captures its semantic meaning.
+Positional encodings are added to these embeddings to provide information about the token positions within the sequence.
+2. Encoder Process in Transformers
+Input Embedding: The input sequence is tokenized and converted into embeddings with positional encodings added.
+Self-Attention Mechanism: Each token in the input sequence attends to every other token to capture dependencies and contextual information.
+Feed-Forward Network: The output from the self-attention mechanism is passed through a position-wise feed-forward network.
+Layer Normalization and Residual Connections: Layer normalization and residual connections are applied.
+3. Decoder Process
+Input Embedding and Positional Encoding: The partially generated output sequence is tokenized and embedded with positional encodings added.
+Masked Self-Attention Mechanism: The decoder uses masked self-attention to prevent attending to future tokens ensuring that the model generates the sequence step-by-step.
+Encoder-Decoder Attention Mechanism: The decoder attends to the encoder's output allowing it to focus on relevant parts of the input sequence.
+Feed-Forward Network: Similar to the encoder the output from the attention mechanisms is passed through a position-wise feed-forward network.
+Layer Normalization and Residual Connections: Similar to the encoder Layer normalization and residual connections are applied.
+4. Training and Inference
+Transformers are trained with teacher forcing, where the correct previous tokens are provided during training to predict the next token. Their encoder-decoder architecture combined with multi-head attention and feed-forward networks enables highly effective handling of sequential data.
+Transformers have transformed deep learning by using self-attention mechanisms to efficiently process and generate sequences capturing long-range dependencies and contextual relationships. Their encoder-decoder architecture combined with multi-head attention and feed-forward networks enables highly effective handling of sequential data.

@@ -1,13 +1,10 @@
 langchain
 langchain-core
-# langchain-openai
 langchain-groq
 langchain-community
 langchain-ollama
-# langchain-google-genai
 langchain-text-splitters
-transformers
-peft
+sentence-transformers
 
 Langserve
 fastapi
@@ -18,8 +15,6 @@ chromadb
 faiss-cpu
 selenium
 lxml
-playwright
-playwright-stealth
 bs4
 pypdf
 arxiv
@@ -28,3 +23,4 @@ wikipedia
 streamlit
 elevenlabs
 inflect
+typesense
