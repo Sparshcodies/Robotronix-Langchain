@@ -24,3 +24,5 @@ streamlit
 elevenlabs
 inflect
 typesense
+
+pymongo[srv]
