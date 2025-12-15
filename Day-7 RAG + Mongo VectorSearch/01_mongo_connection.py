@@ -1,7 +1,11 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from dotenv import load_dotenv
+import os
 
-uri = "mongodb+srv://sparshsahu567_db_user:7Sv9Gjm0V7ZNzSvO@learncluster.useiw0y.mongodb.net/?appName=learnCluster"
+load_dotenv()
+
+uri = os.environ["MONGO_URI"]
 client = MongoClient(uri, server_api=ServerApi('1'))
 try:
     client.admin.command('ping')
