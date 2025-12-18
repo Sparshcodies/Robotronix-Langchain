@@ -4,6 +4,7 @@ langchain-groq
 langchain-community
 langchain-ollama
 langchain-text-splitters
+langchain-google-genai
 sentence-transformers
 
 Langserve
