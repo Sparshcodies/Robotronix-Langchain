@@ -2,3 +2,4 @@ venv
 .env
 *.pdf
 data
+__pycache__

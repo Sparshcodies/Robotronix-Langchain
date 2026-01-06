@@ -11,6 +11,10 @@ Langserve
 fastapi
 uvicorn
 sse_starlette
+fastmcp
+opencv-python
+scikit-learn
+matplotlib
 
 chromadb
 faiss-cpu
@@ -25,5 +29,11 @@ streamlit
 elevenlabs
 inflect
 typesense
+torch 
+torchvision
+ultralytics
+tensorrt
+lap
+
 
 pymongo[srv]
