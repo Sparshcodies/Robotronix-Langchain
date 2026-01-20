@@ -3,3 +3,10 @@ venv
 *.pdf
 data
 __pycache__
+tf-env
+datasets
+yolo11s_1024px*
+football_inference
+*.pkl
+*.pth
+rajesh5ladhe

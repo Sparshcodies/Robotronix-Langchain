@@ -34,6 +34,7 @@ torchvision
 ultralytics
 tensorrt
 lap
+supervision
 
 
 pymongo[srv]
