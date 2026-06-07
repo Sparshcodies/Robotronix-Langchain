@@ -1,13 +1,9 @@
 
 import cv2
-import time
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
 import mediapipe as mp
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
 
 
 model_path = '../data/models/pose_landmarker_full.task'
